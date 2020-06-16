@@ -1,0 +1,28 @@
+{
+  "name": "node-red-contrib-pilight",
+  "version": "0.0.1",
+  "description": "pilight noodes for Node-Red",
+  "repository": "https://github.com/framps/node-red-contrib-pilight",
+  "main": "none",
+  "scripts": {
+  },
+  "keywords": [
+    "node-red",
+    "pilight",
+    "smart",
+    "home",
+    "433MHz"
+  ],
+  "author": {
+    "name": "framp",
+    "email": "framp@linux-tips-and-tricks.de"
+  },
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "pilight-pollin_switch": "nodes/pilight-pollin_switch.js",
+    }
+  },
+  "dependencies": {
+  }
+}
