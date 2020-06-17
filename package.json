@@ -20,7 +20,8 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "pilight-pollin_switch": "nodes/pilight-pollin_switch.js"
+      "pilight-pollin_switch": "nodes/pilight-pollin_switch.js",
+      "pilight-server": "nodes/pilight-server.js"
     }
   },
   "dependencies": {
