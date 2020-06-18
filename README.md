@@ -9,7 +9,7 @@ This custom node is still draft.
 
 As of now the current custom node uses a config node which holds the hostname/ip of the pilight host and the port and generates a URL which has to be passed to a HTTP-Request node. The request uses a hard coded pilight switch of type pollin.
 
-## Sample flow how which just turns a switch on and off
+## Sample flow which just turns a switch on and off
 
 In following flow LivingRoom is the pilight switch node and pilightSend is a HTTP-Request node.
 
