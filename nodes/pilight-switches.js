@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    function Pollin(config) {
+    function PilightSwitchNode(config) {
         RED.nodes.createNode(this,config);
         var node = this;
         node.on('input', function(msg) {
@@ -7,5 +7,5 @@ module.exports = function(RED) {
             node.send(msg);
         });
     }
-    RED.nodes.registerType("Pollin",Pollin);
+    RED.nodes.registerType("pilight-switches",PilightSwitchNode);
 }

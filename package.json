@@ -1,8 +1,11 @@
 {
-  "name": "node-red-contrib-pilight_switches",
+  "name": "node-red-contrib-pilight-switches",
   "version": "0.0.1",
   "description": "pilight switch nodes for Node-Red",
-  "repository": "https://github.com/framps/node-red-contrib-pilight_switches",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/framps/node-red-contrib-pilight-switches"
+  },
   "main": "none",
   "scripts": {
   },
@@ -20,8 +23,8 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "pilight-pollin_switch": "nodes/pilight-pollin_switch.js",
-      "pilight-server": "nodes/pilight-server.js"
+      "pilight-server": "nodes/pilight-server.js",
+      "pilight-switches": "nodes/pilight-switches.js"
     }
   },
   "dependencies": {

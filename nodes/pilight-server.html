@@ -2,8 +2,15 @@
     RED.nodes.registerType('pilight-server',{
         category: 'config',
         defaults: {
-            host: {value:"localhost",required:true},
-            port: {value:5001,required:true,validate:RED.validators.number()},
+            host: {
+              value:"localhost",
+              required:true
+            },
+            port: {
+              value:5001,
+              required:true,
+              validate:RED.validators.number()
+            },
         },
         label: function() {
             return this.host+":"+this.port;
