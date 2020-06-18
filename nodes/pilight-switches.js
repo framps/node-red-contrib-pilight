@@ -5,7 +5,10 @@ module.exports = function(RED) {
         var node = this;
         node.on('input', function(msg) {
 
-          var target="192.168.0.12:5001";
+          // Retrieve the config node
+          server = RED.nodes.getNode(config.server);
+
+          var target=server.host+":"+server.port;
 
           var device="protocol=pollin&systemcode=31&unitcode=4";
           var ctl="on=1";
