@@ -1,5 +1,5 @@
 
-// const xmlhttprequest = require('xmlhttprequest')
+const xmlhttprequest = require('xmlhttprequest')
 // var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
 
 const glbl = {
