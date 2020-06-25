@@ -24,7 +24,7 @@ defines a switch called `PO1`. The switch can be turned on or off by passing tru
 
 ## Sample flow which just turns a switch on and off
 
-In following flow LivingRoom is the pilight switch node and pilightSend is a HTTP-Request node. The pilightSend node will vanish because all HTTP REST call logic will be handled in the pilight switch node.
+In following flow there are two pilight switches. One in on and the other is off. They can be turned on or off by sending true or false to the switch node.
 
 ![Alt text](pics/pilight_customnode_flow.png?raw=true "Title")
 
