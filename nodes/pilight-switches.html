@@ -4,8 +4,8 @@
         color: '#a6bbcf',
         defaults: {
           name: {value:""},
-          switch_type: {
-            value:"pollin"
+          device: {
+            value:""
           },
           server: {
             type:"pilight-server",
@@ -27,12 +27,12 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-switch_type"><i class="icon-tag"></i> Switch type</label>
-        <input type="text" id="node-input-switch_type" placeholder="Switch type">
+        <label for="node-input-device"><i class="icon-tag"></i> Device</label>
+        <input type="text" id="node-input-device" placeholder="pilight device name">
     </div>
     <div class="form-row">
          <label for="node-input-server"><i class="icon-tag"></i> Server</label>
-         <input type="text" id="node-input-server" placeholder="Server" />
+         <input type="text" id="node-input-server" placeholder="DNS name or IP" />
     </div>
 </script>
 
