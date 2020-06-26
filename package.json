@@ -7,8 +7,7 @@
     "url": "https://github.com/framps/node-red-contrib-pilight-switches"
   },
   "main": "none",
-  "scripts": {
-  },
+  "scripts": {},
   "keywords": [
     "node-red",
     "pilight",
@@ -28,6 +27,6 @@
     }
   },
   "dependencies": {
- 	"xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0"
   }
 }

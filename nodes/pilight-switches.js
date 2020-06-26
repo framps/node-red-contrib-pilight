@@ -1,39 +1,60 @@
 
 const xmlhttprequest = require('xmlhttprequest')
-// var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
 
+// keep pilight device list
 const glbl = {
   devices: null
 }
 
 module.exports = function(RED) {
+
     function PilightSwitchNode(config) {
+
         RED.nodes.createNode(this,config);
         var node = this;
 
         this.name = config.name;
         this.device = config.device;
 
+        server = RED.nodes.getNode(config.server);
+        var target=server.host+":"+server.port;
+
+        // retrieve all pilight devices from server
+        if ( glbl.devices == null ) {
+          glbl.devices=retrieveDeviceConfig(target);
+        }
+
+        if ( this.device in glbl.devices ) {
+          device_details = glbl.devices[this.device];
+          setStatus(node, device_details.state === "on" ? node_status.ON : node_status.OFF);
+        } else {
+          console.error("Device " + this.device + " not found");
+          setStatus(node, node_status.ERROR);
+        }
+
+//      Node received input payload
+
         node.on('input', function(msg) {
+
+          // ignore any invalid input
+          if ( typeof msg.payload !== 'boolean') {
+            return
+          }
 
           // Retrieve the config node
           server = RED.nodes.getNode(config.server);
           var target=server.host+":"+server.port;
-
-          if ( glbl.devices == null ) {
-            glbl.devices=retrieveDeviceConfig(target);
-          }
-
-          console.log(JSON.stringify(node));
 
           if ( this.device in glbl.devices ) {
             device_details = glbl.devices[this.device];
             console.log("Device details of " + this.device + " : " + JSON.stringify(device_details));
           } else {
             console.error("Device " + this.device + " not found");
-            setStatus(node, null, null);
+            setStatus(node, node_status.ERROR);
             return;
           }
+
+          // now turn switch on or off
 
           // device_details: {"protocol":["pollin"],"id":[{"systemcode":31,"unitcode":4}],"state":"off"}
           // should become
@@ -42,34 +63,42 @@ module.exports = function(RED) {
           protocol_url="protocol="+device_details.protocol + "&";
           id0=device_details.id[0];
           id_url="";
-
+          // build REST url from device info
           Object.keys(id0).forEach(function(key){
              console.log(key + '=' + id0[key]);
              id_url=id_url + key + "=" + id0[key] + "&";
           });
+          var url="http://"+target+"/send?"+protocol_url + id_url + (msg.payload ? "on=1" : "off=1");
 
-          device_url=protocol_url + id_url;
-
-          // Create on/off part of url
-          var ctl="on=1";
-          if (msg.payload === false) {
-            ctl="off=1";
-          };
-          var url="http://"+target+"/send?"+device_url+ctl;
-
+          // send REST request
           response=HTTP_Get(url);
+          // status unknown for now
+          status=node_status.UNKNOWN;
 
-          setStatus(node, response, ctl === "on=1");
+          // check REST response and set status of node
+          if ( JSON.stringify(response) === JSON.stringify({ "message": "success" }) ) {
+            status=(msg.payload === true ? node_status.ON : node_status.OFF)
+          } else if ( JSON.stringify(response) === JSON.stringify({ "message": "failure" }) ) {
+              status=node_status.FAILED;
+          }
 
+          // set status of node
+          setStatus(node,status);
+
+          // return status in payload and response and REST url
           msg={
             "url": url,
-            "payload": url
+            "response" : response,
+            "payload": status
           }
           node.send(msg);
         });
     }
     RED.nodes.registerType("pilight-switches",PilightSwitchNode);
 }
+
+
+// send a get HTTP request and return HTTP result
 
 function HTTP_Get(url) {
 
@@ -83,25 +112,38 @@ function HTTP_Get(url) {
   return result;
 }
 
-// set status of switch on, off or undefined
-function setStatus(node, response, on) {
+// node states
 
-  console.log("Set status \n" + JSON.stringify(response)) + on;
+const node_status = {
+  FAILED: 'failed',
+  ON: 'on',
+  OFF: 'off',
+  ERROR: 'error'
+}
 
-  if ( response !== null) {
-    if ( JSON.stringify(response) === JSON.stringify({ "message": "success" }) ) {
-      if ( on ) {
-        node.status({fill:"green",shape:"ring",text:"on"});
-      } else {
-        node.status({fill:"red",shape:"ring",text:"off"});
-      }
-    } else {
+// set status of switch on, off, undefined or failed
+function setStatus(node, status) {
+
+  console.log("Set status of " + node.name + " to " + status);
+
+  console.log(node_status.ON);
+
+  switch (status) {
+    case node_status.ON :
+      node.status({fill:"green",shape:"ring",text:"on"});
+      break;
+    case node_status.OFF :
+      node.status({fill:"red",shape:"ring",text:"off"});
+      break;
+    case node_status.UNDEFINED :
       node.status({fill:"red",shape:"dot",text:"undefined"});
-    }
-  } else {
+      break;
+    case node_status.ERROR :
       node.status({fill:"red",shape:"dot",text:"error"});
   }
 }
+
+// retrieve pilight devices defined in pilight server
 
 function retrieveDeviceConfig(target) {
 
