@@ -2,9 +2,6 @@
 
 [pilight](https://www.pilight.org/) supports various 433MHz devices. This node should help to use 433MHz switches via pilight in Node-Red.
 
-## Note
-This custom node is still under development.
-
 ## Use case
 
 A node-red plight switch can be used to turn a pilight switch on and off. It's identified via it's pilight config definition name. For example the following pilight config device definition
@@ -20,11 +17,11 @@ A node-red plight switch can be used to turn a pilight switch on and off. It's i
                }
 ```
 
-defines a switch called `PO1`. The switch can be turned on or off by passing true or false in the input payload. When a node is created the switch name can be selected from a drop down list of all available pilight switches.
+defines a switch called `PO1`. The switch can be turned on or off by passing true or false in the input payload.
 
 ## Sample flow which just turns a switch on and off
 
-In following flow there are two pilight switches. One in on and the other is off. They can be turned on or off by sending true or false to the switch node.
+In following flow there are three pilight switches. One in on and the other is off. They can be turned on or off by sending true or false to the switch node. The last one is in error state because an invalid pilight device name is used in the pilight switch node.
 
 ![Alt text](pics/pilight_customnode_flow.png?raw=true "Title")
 
@@ -40,5 +37,5 @@ In following flow there are two pilight switches. One in on and the other is off
 
 ### Missing
 
-1. During node creation present a dropdown list of available pilight switches to select the device name from
-2. Error handling and notification
+1. During node creation it may be convneinet to present a dropdown list of available pilight switches to select the device name from
+2. Better error handling and notification
