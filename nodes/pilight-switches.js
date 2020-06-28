@@ -47,7 +47,7 @@ module.exports = function(RED) {
 
           if ( this.device in glbl.devices ) {
             device_details = glbl.devices[this.device];
-            console.log("Device details of " + this.device + " : " + JSON.stringify(device_details));
+            // console.log("Device details of " + this.device + " : " + JSON.stringify(device_details));
           } else {
             console.error("Device " + this.device + " not found");
             setStatus(node, node_status.ERROR);
@@ -68,10 +68,10 @@ module.exports = function(RED) {
              console.log(key + '=' + id0[key]);
              id_url=id_url + key + "=" + id0[key] + "&";
           });
-          var url="http://"+target+"/send?"+protocol_url + id_url + (msg.payload ? "on=1" : "off=1");
+          var request="http://"+target+"/send?"+protocol_url + id_url + (msg.payload ? "on=1" : "off=1");
 
           // send REST request
-          response=HTTP_Get(url);
+          response=HTTP_Get(request);
           // status unknown for now
           status=node_status.UNKNOWN;
 
@@ -87,7 +87,7 @@ module.exports = function(RED) {
 
           // return status in payload and response and REST url
           msg={
-            "url": url, // REST request to pilight
+            "request": request, // REST request to pilight
             "response" : response, // REST response from pilight
             "payload": status // on, off, error or undefined
           }
@@ -106,7 +106,7 @@ module.exports = function(RED) {
 
 function HTTP_Get(url) {
 
-  console.log("get url " + url);
+  console.log("get request " + url);
   var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
   xhttp=new XMLHttpRequest();
   xhttp.open("GET", url, false);
@@ -129,9 +129,9 @@ const node_status = {
 // set status of switch on, off, undefined or failed
 function setStatus(node, status) {
 
-  console.log("Set status of " + node.name + " to " + status);
+  // console.log("Set status of " + node.name + " to " + status);
 
-  console.log(node_status.ON);
+  // console.log(node_status.ON);
 
   switch (status) {
     case node_status.ON :
@@ -152,12 +152,12 @@ function setStatus(node, status) {
 
 function retrieveDeviceConfig(target) {
 
-    console.log('Retrieving config from '+target);
+    // console.log('Retrieving config from '+target);
 
     url="http://"+target+"/config?media=all";
     config=HTTP_Get(url);
 
-    console.log(JSON.stringify(config));
+    // console.log(JSON.stringify(config));
 
     // extract all devices from response
     var devices = {};

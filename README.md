@@ -55,11 +55,11 @@ msg.payload can be true or false to turn the switch on or off
 
 ```
 msg={
-  "url": url,
-  "response" : response,
-  "payload": status
+  "request": request,   
+  "response": response,
+  "payload": status     
 }
 ```
-* url: REST url sent to pilight
+* request: REST request sent to pilight
 * response: REST response from pilight
 * status: state of the switch (on, off, undefined or error)
