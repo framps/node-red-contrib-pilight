@@ -34,8 +34,8 @@ In following flow there are three pilight switches. One in on and the other is o
 3. During startup all available pilight switch devices are retrieved from pilight and can be used as device names in nodes
 4. A flag on the node shows whether the switch is on of off
 5. Set switch status from pilight device list when node-red starts up and initializes the switch nodes
+6. When a node is created present a dropdown list of available pilight switches to select the device name from
 
 ### Missing
 
-1. During node creation it may be convneinet to present a dropdown list of available pilight switches to select the device name from
-2. Better error handling and notification
+1. Better error handling and notification
