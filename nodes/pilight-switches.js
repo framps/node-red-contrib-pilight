@@ -79,7 +79,7 @@ module.exports = function(RED) {
           if ( JSON.stringify(response) === JSON.stringify({ "message": "success" }) ) {
             status=(msg.payload === true ? node_status.ON : node_status.OFF)
           } else if ( JSON.stringify(response) === JSON.stringify({ "message": "failure" }) ) {
-              status=node_status.FAILED;
+            status=node_status.FAILED;
           }
 
           // set status of node
@@ -100,73 +100,74 @@ module.exports = function(RED) {
     });
 
     RED.nodes.registerType("pilight-switches",PilightSwitchNode);
-}
 
-// send a get HTTP request and return HTTP result
+    // send a get HTTP request and return HTTP result
 
-function HTTP_Get(url) {
+    function HTTP_Get(url) {
 
-  console.log("get request " + url);
-  var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
-  xhttp=new XMLHttpRequest();
-  xhttp.open("GET", url, false);
-  xhttp.send();
-  result=JSON.parse(xhttp.responseText);
-  console.log("result: \n" + JSON.stringify(result));
-  return result;
-}
+      console.log("get request " + url);
+      var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
+      xhttp=new XMLHttpRequest();
+      xhttp.open("GET", url, false);
+      xhttp.send();
+      result=JSON.parse(xhttp.responseText);
+      console.log("result: \n" + JSON.stringify(result));
+      return result;
+    }
 
-// node states
+    // node states
 
-const node_status = {
-  FAILED: 'failed', // REST request failed
-  ERROR: 'error', // pilight device not found
-  ON: 'on', // switch turned on
-  OFF: 'off', // switch tuned off
-  UNKNOWN: 'unkonwn' // unexpected REST response
-}
+    const node_status = {
+      FAILED: 'failed', // REST request failed
+      ERROR: 'error', // pilight device not found
+      ON: 'on', // switch turned on
+      OFF: 'off', // switch tuned off
+      UNKNOWN: 'unkonwn' // unexpected REST response
+    }
 
-// set status of switch on, off, undefined or failed
-function setStatus(node, status) {
+    // set status of switch on, off, undefined or failed
+    function setStatus(node, status) {
 
-  // console.log("Set status of " + node.name + " to " + status);
+      // console.log("Set status of " + node.name + " to " + status);
 
-  // console.log(node_status.ON);
+      // console.log(node_status.ON);
 
-  switch (status) {
-    case node_status.ON :
-      node.status({fill:"green",shape:"ring",text:"on"});
-      break;
-    case node_status.OFF :
-      node.status({fill:"red",shape:"ring",text:"off"});
-      break;
-    case node_status.UNDEFINED :
-      node.status({fill:"red",shape:"dot",text:"undefined"});
-      break;
-    case node_status.ERROR :
-      node.status({fill:"red",shape:"dot",text:"error"});
-  }
-}
+      switch (status) {
+        case node_status.ON :
+          node.status({fill:"green",shape:"ring",text:"on"});
+          break;
+        case node_status.OFF :
+          node.status({fill:"red",shape:"ring",text:"off"});
+          break;
+        case node_status.UNDEFINED :
+          node.status({fill:"red",shape:"dot",text:"undefined"});
+          break;
+        case node_status.ERROR :
+          node.status({fill:"red",shape:"dot",text:"error"});
+      }
+    }
 
-// retrieve pilight devices defined in pilight server
+    // retrieve pilight devices defined in pilight server
 
-function retrieveDeviceConfig(target) {
+    function retrieveDeviceConfig(target) {
 
-    // console.log('Retrieving config from '+target);
+        // console.log('Retrieving config from '+target);
 
-    url="http://"+target+"/config?media=all";
-    config=HTTP_Get(url);
+        url="http://"+target+"/config?media=all";
+        config=HTTP_Get(url);
 
-    // console.log(JSON.stringify(config));
+        // console.log(JSON.stringify(config));
 
-    // extract all devices from response
-    var devices = {};
-    Object.keys(config.devices).forEach(function(key){
-       console.log(key + '=' + config.devices[key]);
-       devices[key]=config.devices[key];
-    });
+        // extract all devices from response
+        var devices = {};
+        Object.keys(config.devices).forEach(function(key){
+           console.log(key + '=' + config.devices[key]);
+           devices[key]=config.devices[key];
+        });
 
-    console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
+        console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
 
-    return devices;
+        return devices;
+    }
+
 }
