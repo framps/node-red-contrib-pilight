@@ -94,9 +94,13 @@ module.exports = function(RED) {
           node.send(msg);
         });
     }
+
+    RED.httpAdmin.get("/pilightswitch/devices", RED.auth.needsPermission('pilight-switch.read'), function(req, res) {
+        res.json(glbl.devices);
+    });
+
     RED.nodes.registerType("pilight-switches",PilightSwitchNode);
 }
-
 
 // send a get HTTP request and return HTTP result
 

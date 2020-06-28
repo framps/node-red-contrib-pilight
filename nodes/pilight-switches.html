@@ -17,18 +17,30 @@
         icon: "file.png",
         label: function() {
             return this.name||"pilight-switch";
+        },
+        oneditprepare: function() {
+          var node = this;
+          $.getJSON('pilightswitch/devices', function(data) {
+            console.log(data);
+            Object.keys(data).forEach(function(key){
+              $('#node-input-device').append(`<option value="${key}">${key}</option>`);
+            });
+          $('#node-input-device').val(node.device);
+          });
         }
     });
 </script>
 
 <script type="text/html" data-template-name="pilight-switches">
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <label for="node-input-name"><i class="icon-tag"</i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
         <label for="node-input-device"><i class="icon-tag"></i> Device</label>
-        <input type="text" id="node-input-device" placeholder="pilight device name">
+        <select id="node-input-device">
+            <!-- <option value="default">default device</option> -->
+        </select>
     </div>
     <div class="form-row">
          <label for="node-input-server"><i class="icon-tag"></i> Server</label>
