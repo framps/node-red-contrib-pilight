@@ -1,10 +1,10 @@
 {
-  "name": "node-red-contrib-pilight-switches",
+  "name": "node-red-contrib-pilight_switches",
   "version": "0.0.1",
   "description": "pilight switch nodes for Node-Red",
   "repository": {
     "type": "git",
-    "url": "https://github.com/framps/node-red-contrib-pilight-switches"
+    "url": "https://github.com/framps/node-red-contrib-pilight_switches"
   },
   "main": "none",
   "scripts": {},
