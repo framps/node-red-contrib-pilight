@@ -87,9 +87,9 @@ module.exports = function(RED) {
 
           // return status in payload and response and REST url
           msg={
-            "url": url,
-            "response" : response,
-            "payload": status
+            "url": url, // REST request to pilight
+            "response" : response, // REST response from pilight
+            "payload": status // on, off, error or undefined
           }
           node.send(msg);
         });
@@ -119,10 +119,11 @@ function HTTP_Get(url) {
 // node states
 
 const node_status = {
-  FAILED: 'failed',
-  ON: 'on',
-  OFF: 'off',
-  ERROR: 'error'
+  FAILED: 'failed', // REST request failed
+  ERROR: 'error', // pilight device not found
+  ON: 'on', // switch turned on
+  OFF: 'off', // switch tuned off
+  UNKNOWN: 'unkonwn' // unexpected REST response
 }
 
 // set status of switch on, off, undefined or failed

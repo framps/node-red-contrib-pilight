@@ -8,34 +8,58 @@ A node-red plight switch can be used to turn a pilight switch on and off. It's i
 
 ```
 "PO1": {
-                       "protocol": [ "pollin" ],
-                       "id": [{
-                               "systemcode": 31,
-                               "unitcode": 1
+       "protocol": [ "pollin" ],
+                   "id": [{
+                             "systemcode": 31,
+                             "unitcode": 1
                        }],
-                       "state": "off"
-               }
+                   "state": "off"
+       }
 ```
 
 defines a switch called `PO1`. The switch can be turned on or off by passing true or false in the input payload.
 
 ## Sample flow which just turns a switch on and off
 
-In following flow there are three pilight switches. One in on and the other is off. They can be turned on or off by sending true or false to the switch node. The last one is in error state because an invalid pilight device name is used in the pilight switch node.
+In following flow there are three pilight switches. One in on and the other is off. They can be turned on or off by sending true or false to the switch node. The last one is in error state because the pilight device selected does not exist
 
 ![Alt text](pics/pilight_customnode_flow.png?raw=true "Title")
 
-## Coding status
-
-### Implemented
+## Features
 
 1. A config node holds the hostname/ip of the pilight host and the port
-2. A switch node has a name and a device name which idetifies the pilight switch device (see below)
-3. During startup all available pilight switch devices are retrieved from pilight and can be used as device names in nodes
-4. A flag on the node shows whether the switch is on of off
-5. Set switch status from pilight device list when node-red starts up and initializes the switch nodes
-6. When a node is created present a dropdown list of available pilight switches to select the device name from
+2. A switch node has a name and a device name which identifies the pilight switch device
+3. During startup all available pilight switch devices are retrieved from pilight server and can be used as device names in nodes via a drop down list
+4. A flag on the node shows the state of the switch (on, off, error or undefined)
+5. Current status of switches is retrieved from pilight server when node-red starts up and initializes the switch nodes
+6. When a node is created a the pilight device is selected from a dropdown list of all defined pilight switches
 
-### Missing
+### Todos
 
 1. Better error handling and notification
+
+## How to use a pilight switch
+
+1. git clone this repository on your system
+2. Install pilight switches with `npm install ~/github.com/framps/node-red-contrib-pilight-switches`
+3. Start node-red and drag and drop node `pilight switches` in the flow editor
+4. Double click on the node and create a configuration node for pilight-switches. Add the hostname and port (usually 5001) of you configured pilight server.
+5. Select the pilight device switch via the dropdown list.
+6. Pass `true` or `false` into the node to turn the switch on or off.
+
+## Input
+
+msg.payload can be true or false to turn the switch on or off
+
+## Output
+
+```
+msg={
+  "url": url,
+  "response" : response,
+  "payload": status
+}
+```
+* url: REST url sent to pilight
+* response: REST response from pilight
+* status: state of the switch (on, off, undefined or error)
