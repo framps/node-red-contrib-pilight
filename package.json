@@ -22,8 +22,8 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "pilight-server": "nodes/pilight-server.js",
-      "pilight-switches": "nodes/pilight-switches.js"
+      "pilight-server": "nodes/server.js",
+      "pilight-switch": "nodes/switch.js"
     }
   },
   "dependencies": {

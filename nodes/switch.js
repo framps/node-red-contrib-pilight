@@ -23,7 +23,7 @@ module.exports = function(RED) {
         server = RED.nodes.getNode(config.server);
         var target=server.host+":"+server.port;
 
-        // retrieve all pilight devices from pilight server
+        // retrieve all pilight devices from pilight server if not already done
         if ( glbl.devices == null ) {
           glbl.devices=retrieveDeviceConfig(target);
         }
@@ -50,6 +50,11 @@ module.exports = function(RED) {
           // Retrieve the config node
           var server = RED.nodes.getNode(config.server);
           var target=server.host+":"+server.port;
+
+          // retrieve all pilight devices from pilight server if not already done
+          if ( glbl.devices == null ) {
+            glbl.devices=retrieveDeviceConfig(target);
+          }
 
           // construct pilight server host from config node
           if ( this.device in glbl.devices ) {
@@ -113,7 +118,7 @@ module.exports = function(RED) {
         res.json(glbl.devices);
     });
 
-    RED.nodes.registerType("pilight-switches",PilightSwitchNode);
+    RED.nodes.registerType("pilight-switch",PilightSwitchNode);
 
     // send a get HTTP request and return HTTP response
     // return null if request failed
