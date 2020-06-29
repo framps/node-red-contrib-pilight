@@ -20,6 +20,7 @@
         },
         oneditprepare: function() {
           var node = this;
+          <!-- callback to node-red server to retrieve the available pilight devices to populate the drop down list ->
           $.getJSON('pilightswitch/devices', function(data) {
             // console.log(data);
             Object.keys(data).forEach(function(key){

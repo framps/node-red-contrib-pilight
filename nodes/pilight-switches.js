@@ -13,21 +13,25 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         var node = this;
 
+        // save node name and pilight device name
         this.name = config.name;
         this.device = config.device;
 
+        // construct pilight server host from config node
         server = RED.nodes.getNode(config.server);
         var target=server.host+":"+server.port;
 
-        // retrieve all pilight devices from server
+        // retrieve all pilight devices from pilight server
         if ( glbl.devices == null ) {
           glbl.devices=retrieveDeviceConfig(target);
         }
 
         if ( this.device in glbl.devices ) {
           device_details = glbl.devices[this.device];
+          // set on/off query string
           setStatus(node, device_details.state === "on" ? node_status.ON : node_status.OFF);
         } else {
+          // device does not exist any more on pilight server
           console.error("Device " + this.device + " not found");
           setStatus(node, node_status.ERROR);
         }
@@ -45,10 +49,12 @@ module.exports = function(RED) {
           server = RED.nodes.getNode(config.server);
           var target=server.host+":"+server.port;
 
+          // construct pilight server host from config node
           if ( this.device in glbl.devices ) {
             device_details = glbl.devices[this.device];
             // console.log("Device details of " + this.device + " : " + JSON.stringify(device_details));
           } else {
+            // device does not exist any more on pilight server
             console.error("Device " + this.device + " not found");
             setStatus(node, node_status.ERROR);
             return;
@@ -56,9 +62,9 @@ module.exports = function(RED) {
 
           // now turn switch on or off
 
-          // device_details: {"protocol":["pollin"],"id":[{"systemcode":31,"unitcode":4}],"state":"off"}
+          // device_details from pilight device atrributes: {"protocol":["pollin"],"id":[{"systemcode":31,"unitcode":4}],"state":"off"}
           // should become
-          // device_url="protocol=pollin&systemcode=31&unitcode=4";
+          // device_url="protocol=pollin&systemcode=31&unitcode=4"
 
           protocol_url="protocol="+device_details.protocol + "&";
           id0=device_details.id[0];
@@ -95,13 +101,14 @@ module.exports = function(RED) {
         });
     }
 
+    // callback from client to retrieve the list of available pilight devices to build the dropdown list in the editor
     RED.httpAdmin.get("/pilightswitch/devices", RED.auth.needsPermission('pilight-switch.read'), function(req, res) {
         res.json(glbl.devices);
     });
 
     RED.nodes.registerType("pilight-switches",PilightSwitchNode);
 
-    // send a get HTTP request and return HTTP result
+    // send a get HTTP request and return HTTP response
 
     function HTTP_Get(url) {
 
@@ -118,11 +125,11 @@ module.exports = function(RED) {
     // node states
 
     const node_status = {
-      FAILED: 'failed', // REST request failed
-      ERROR: 'error', // pilight device not found
-      ON: 'on', // switch turned on
-      OFF: 'off', // switch tuned off
-      UNKNOWN: 'unkonwn' // unexpected REST response
+      FAILED: 'failed',     // REST request failed
+      ERROR: 'error',       // pilight device not found
+      ON: 'on',             // switch turned on
+      OFF: 'off',           // switch tuned off
+      UNKNOWN: 'unkonwn'    // unexpected REST response
     }
 
     // set status of switch on, off, undefined or failed
@@ -149,6 +156,40 @@ module.exports = function(RED) {
 
     // retrieve pilight devices defined in pilight server
 
+    // pilight response format is a list of devices with their name and properties including the current state.
+    // Current state is etrieved during initialization of node to set the status in node-red accordingly.
+
+/*
+    {
+    "devices": {
+      "PO1": {
+        "protocol": [
+          "pollin"
+        ],
+        "id": [
+        {
+          "systemcode": 31,
+          "unitcode": 1
+        }
+      ],
+        "state": "off"
+      },
+      "PO2": {
+        "protocol": [
+          "pollin"
+        ],
+        "id": [
+          {
+            "systemcode": 31,
+            "unitcode": 2
+          }
+        ],
+        "state": "off"
+        },
+
+...
+
+  */
     function retrieveDeviceConfig(target) {
 
         // console.log('Retrieving config from '+target);
