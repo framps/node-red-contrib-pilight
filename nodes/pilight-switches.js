@@ -81,11 +81,15 @@ module.exports = function(RED) {
           // status unknown for now
           status=node_status.UNKNOWN;
 
-          // check REST response and set status of node
-          if ( JSON.stringify(response) === JSON.stringify({ "message": "success" }) ) {
-            status=(msg.payload === true ? node_status.ON : node_status.OFF)
-          } else if ( JSON.stringify(response) === JSON.stringify({ "message": "failure" }) ) {
-            status=node_status.FAILED;
+          if ( response != null ) {
+            // check REST response and set status of node
+            if ( JSON.stringify(response) === JSON.stringify({ "message": "success" }) ) {
+              status=(msg.payload === true ? node_status.ON : node_status.OFF);
+            } else if ( JSON.stringify(response) === JSON.stringify({ "message": "failure" }) ) {
+              status=node_status.FAILED;
+            }
+          } else {
+              status=node_status.ERROR;
           }
 
           // set status of node
@@ -115,11 +119,22 @@ module.exports = function(RED) {
       console.log("get request " + url);
       var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
       xhttp=new XMLHttpRequest();
+      var requestOK=true
+      xhttp.addEventListener("error", function transferFailed(evt) {
+        console.log("Unable to process request");
+        console.log(xhttp.statusText);
+        requestOK=false;
+      });
       xhttp.open("GET", url, false);
       xhttp.send();
-      result=JSON.parse(xhttp.responseText);
-      console.log("result: \n" + JSON.stringify(result));
-      return result;
+      if ( requestOK ) {
+        console.log(JSON.stringify(xhttp));
+        result=JSON.parse(xhttp.responseText);
+        console.log("result: \n" + JSON.stringify(result));
+        return result;
+      } else {
+        return null;
+      }
     }
 
     // node states
@@ -197,16 +212,20 @@ module.exports = function(RED) {
         url="http://"+target+"/config?media=all";
         config=HTTP_Get(url);
 
-        // console.log(JSON.stringify(config));
-
-        // extract all devices from response
         var devices = {};
-        Object.keys(config.devices).forEach(function(key){
-           console.log(key + '=' + config.devices[key]);
-           devices[key]=config.devices[key];
-        });
 
-        console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
+        if ( config !== null ) {
+          // console.log(JSON.stringify(config));
+          // extract all devices from response
+          Object.keys(config.devices).forEach(function(key){
+             console.log(key + '=' + config.devices[key]);
+             devices[key]=config.devices[key];
+          });
+
+          console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
+        } else {
+          console.log('Unable to retrieve config');
+        }
 
         return devices;
     }
