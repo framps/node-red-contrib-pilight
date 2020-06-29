@@ -10,6 +10,8 @@ module.exports = function(RED) {
 
     function PilightSwitchNode(config) {
 
+        // -- Node initialized
+
         RED.nodes.createNode(this,config);
         var node = this;
 
@@ -36,7 +38,7 @@ module.exports = function(RED) {
           setStatus(node, node_status.ERROR);
         }
 
-//      Node received input payload
+        // -- Node received input payload
 
         node.on('input', function(msg) {
 
@@ -46,7 +48,7 @@ module.exports = function(RED) {
           }
 
           // Retrieve the config node
-          server = RED.nodes.getNode(config.server);
+          var server = RED.nodes.getNode(config.server);
           var target=server.host+":"+server.port;
 
           // construct pilight server host from config node
@@ -66,9 +68,9 @@ module.exports = function(RED) {
           // should become
           // device_url="protocol=pollin&systemcode=31&unitcode=4"
 
-          protocol_url="protocol="+device_details.protocol + "&";
-          id0=device_details.id[0];
-          id_url="";
+          var protocol_url="protocol="+device_details.protocol + "&";
+          var id0=device_details.id[0];
+          var id_url="";
           // build REST url from device info
           Object.keys(id0).forEach(function(key){
              console.log(key + '=' + id0[key]);
@@ -77,9 +79,9 @@ module.exports = function(RED) {
           var request="http://"+target+"/send?"+protocol_url + id_url + (msg.payload ? "on=1" : "off=1");
 
           // send REST request
-          response=HTTP_Get(request);
+          var response=HTTP_Get(request);
           // status unknown for now
-          status=node_status.UNKNOWN;
+          var status=node_status.UNKNOWN;
 
           if ( response != null ) {
             // check REST response and set status of node
@@ -96,7 +98,7 @@ module.exports = function(RED) {
           setStatus(node,status);
 
           // return status in payload and response and REST url
-          msg={
+          var msg={
             "request": request, // REST request to pilight
             "response" : response, // REST response from pilight
             "payload": status // on, off, error or undefined
@@ -105,7 +107,8 @@ module.exports = function(RED) {
         });
     }
 
-    // callback from client to retrieve the list of available pilight devices to build the dropdown list in the editor
+    //  -- callback from client to retrieve the list of available pilight devices to build the dropdown list in the editor
+
     RED.httpAdmin.get("/pilightswitch/devices", RED.auth.needsPermission('pilight-switch.read'), function(req, res) {
         res.json(glbl.devices);
     });
@@ -113,24 +116,25 @@ module.exports = function(RED) {
     RED.nodes.registerType("pilight-switches",PilightSwitchNode);
 
     // send a get HTTP request and return HTTP response
+    // return null if request failed
 
     function HTTP_Get(url) {
 
-      console.log("get request " + url);
+      console.log("Request " + url);
       var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
       xhttp=new XMLHttpRequest();
       var requestOK=true
       xhttp.addEventListener("error", function transferFailed(evt) {
-        console.log("Unable to process request");
-        console.log(xhttp.statusText);
+        console.error("Unable to process request");
+        console.error(xhttp.statusText);
         requestOK=false;
       });
       xhttp.open("GET", url, false);
       xhttp.send();
       if ( requestOK ) {
-        console.log(JSON.stringify(xhttp));
-        result=JSON.parse(xhttp.responseText);
-        console.log("result: \n" + JSON.stringify(result));
+        // console.log(JSON.stringify(xhttp));
+        var result=JSON.parse(xhttp.responseText);
+        // console.log("result: \n" + JSON.stringify(result));
         return result;
       } else {
         return null;
@@ -147,12 +151,11 @@ module.exports = function(RED) {
       UNKNOWN: 'unkonwn'    // unexpected REST response
     }
 
-    // set status of switch on, off, undefined or failed
+//
+// -- set status of switch in flow editor on, off, undefined or failed
+//
+
     function setStatus(node, status) {
-
-      // console.log("Set status of " + node.name + " to " + status);
-
-      // console.log(node_status.ON);
 
       switch (status) {
         case node_status.ON :
@@ -169,10 +172,12 @@ module.exports = function(RED) {
       }
     }
 
-    // retrieve pilight devices defined in pilight server
-
-    // pilight response format is a list of devices with their name and properties including the current state.
-    // Current state is etrieved during initialization of node to set the status in node-red accordingly.
+//
+//    -- retrieve pilight devices defined in pilight server
+//
+//    pilight response format is a list of devices with their name and properties including the current state.
+//    Current state is etrieved during initialization of node to set the status in node-red accordingly.
+//    In case of error the returned list is empty
 
 /*
     {
@@ -205,17 +210,15 @@ module.exports = function(RED) {
 ...
 
   */
+
     function retrieveDeviceConfig(target) {
 
-        // console.log('Retrieving config from '+target);
-
-        url="http://"+target+"/config?media=all";
-        config=HTTP_Get(url);
+        var url="http://"+target+"/config?media=all";
+        var config=HTTP_Get(url);
 
         var devices = {};
 
         if ( config !== null ) {
-          // console.log(JSON.stringify(config));
           // extract all devices from response
           Object.keys(config.devices).forEach(function(key){
              console.log(key + '=' + config.devices[key]);
@@ -224,7 +227,7 @@ module.exports = function(RED) {
 
           console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
         } else {
-          console.log('Unable to retrieve config');
+          console.error('Unable to retrieve config');
         }
 
         return devices;
