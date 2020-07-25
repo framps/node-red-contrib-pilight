@@ -31,7 +31,9 @@
         },
         oneditsave: function() {          <!-- if no node name was enterd use the device name as node name ->
           var node = this;
-          if ( ! $('#node-input-name').val() ) {
+          <!-- name changed or there was no name ->
+          console.log("---> " + $('#node-input-name').val() + " - " + $('#node-input-device').val());
+          if ( ! $('#node-input-name').val() || $('#node-input-name').val() != $('#node-input-device').val() ) {
             $('#node-input-name').val($('#node-input-device').val());
           }
         }

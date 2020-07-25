@@ -12,6 +12,7 @@ module.exports = function(RED) {
 
         // -- Node initialized
 
+        console.log("Node initialized");
         RED.nodes.createNode(this,config);
         var node = this;
 
@@ -61,10 +62,14 @@ module.exports = function(RED) {
             device_details = glbl.devices[this.device];
             // console.log("Device details of " + this.device + " : " + JSON.stringify(device_details));
           } else {
-            // device does not exist any more on pilight server
-            console.error("Device " + this.device + " not found");
-            setStatus(node, node_status.ERROR);
-            return;
+            if ( this.device.length != 0 ) {
+              // device does not exist any more on pilight server
+              console.error("Device " + this.device + " not found");
+              setStatus(node, node_status.ERROR);
+              return;
+            } else {
+              return;
+            }
           }
 
           // now turn switch on or off
@@ -120,32 +125,6 @@ module.exports = function(RED) {
 
     RED.nodes.registerType("pilight-switch",PilightSwitchNode);
 
-    // send a get HTTP request and return HTTP response
-    // return null if request failed
-
-    function HTTP_Get(url) {
-
-      console.log("Request " + url);
-      var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
-      xhttp=new XMLHttpRequest();
-      var requestOK=true
-      xhttp.addEventListener("error", function transferFailed(evt) {
-        console.error("Unable to process request");
-        console.error(xhttp.statusText);
-        requestOK=false;
-      });
-      xhttp.open("GET", url, false);
-      xhttp.send();
-      if ( requestOK ) {
-        // console.log(JSON.stringify(xhttp));
-        var result=JSON.parse(xhttp.responseText);
-        // console.log("result: \n" + JSON.stringify(result));
-        return result;
-      } else {
-        return null;
-      }
-    }
-
     // node states
 
     const node_status = {
@@ -176,6 +155,7 @@ module.exports = function(RED) {
           node.status({fill:"red",shape:"dot",text:"error"});
       }
     }
+}
 
 //
 //    -- retrieve pilight devices defined in pilight server
@@ -216,26 +196,52 @@ module.exports = function(RED) {
 
   */
 
-    function retrieveDeviceConfig(target) {
+  function retrieveDeviceConfig(target) {
 
-        var url="http://"+target+"/config?media=all";
-        var config=HTTP_Get(url);
+      console.log("retrieveDeviceConfig");
 
-        var devices = {};
+      var url="http://"+target+"/config?media=all";
+      var config=HTTP_Get(url);
 
-        if ( config !== null ) {
-          // extract all devices from response
-          Object.keys(config.devices).forEach(function(key){
-             console.log(key + '=' + config.devices[key]);
-             devices[key]=config.devices[key];
-          });
+      var devices = {};
 
-          console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
-        } else {
-          console.error('Unable to retrieve config');
-        }
+      if ( config !== null ) {
+        // extract all devices from response
+        Object.keys(config.devices).forEach(function(key){
+           console.log(key + '=' + config.devices[key]);
+           devices[key]=config.devices[key];
+        });
 
-        return devices;
+        console.log('Devices detected: \n' + JSON.stringify(devices,null,3));
+      } else {
+        console.error('Unable to retrieve config');
+      }
+
+      return devices;
+  }
+
+  // send a get HTTP request and return HTTP response
+  // return null if request failed
+
+  function HTTP_Get(url) {
+
+    console.log("Request " + url);
+    var XMLHttpRequest = xmlhttprequest.XMLHttpRequest;
+    xhttp=new XMLHttpRequest();
+    var requestOK=true
+    xhttp.addEventListener("error", function transferFailed(evt) {
+      console.error("Unable to process request");
+      console.error(xhttp.statusText);
+      requestOK=false;
+    });
+    xhttp.open("GET", url, false);
+    xhttp.send();
+    if ( requestOK ) {
+      // console.log(JSON.stringify(xhttp));
+      var result=JSON.parse(xhttp.responseText);
+      // console.log("result: \n" + JSON.stringify(result));
+      return result;
+    } else {
+      return null;
     }
-
-}
+  }
