@@ -1,6 +1,6 @@
 # node-red-contrib-pilight_switches
 
-[pilight](https://www.pilight.org/) supports various 433MHz devices. This node should help to use 433MHz switches via pilight in Node-Red.
+[pilight](https://www.pilight.org/) supports various 433MHz devices. This node hides the complexity to manage 433MHz switches via pilight in Node-Red. Just pass true or false to turn the switch on or off.
 
 ## Use case
 
