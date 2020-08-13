@@ -30,29 +30,29 @@ In following flow there are three pilight switches defined. One in on and the ot
 ## Features
 
 1. A config node holds the hostname/ip of the pilight host and the port
-2. A switch node has a free format node name and a device name which identifies the pilight switch device
-3. During startup all available pilight switch devices are retrieved from pilight server and can be used as device names in nodes via a drop down list
-4. A flag on the node shows the state of the switch (on, off, error or undefined)
-5. Actual status of switches is retrieved from pilight server when node-red starts up and initializes the switch nodes
-6. When a node is created the pilight device is selected from a dropdown list of all defined pilight switches
-7. Default name for a pilight switch is the device name.
+1. A switch node has a free format node name and a device name which identifies the pilight switch device
+1. During startup all available pilight switch devices are retrieved from pilight server and can be used as device names in nodes via a drop down list
+1. A flag on the node shows the state of the switch (on, off, error or undefined)
+1. Actual status of switches is retrieved from pilight server when node-red starts up and initializes the switch nodes
+1. When a node is created the pilight device is selected from a dropdown list of all defined pilight switches
+1. Default name for a pilight switch is the device name.
 
 ## How to use a pilight switch
 
 1. git clone this repository on your system
-2. Install pilight switches with `npm install ~/github.com/framps/node-red-contrib-pilight_switches`
-3. Drag and drop node `pilight switches` into the flow editor
-4. Double click on the node and create a configuration node for pilight-switches. Add the hostname and port (usually 5001) of your pilight server.
-5. If this is the first pilight switch used
+1. Install pilight switches with `npm install ~/github.com/framps/node-red-contrib-pilight_switches`
+1. Drag and drop node `pilight switches` into the flow editor
+1. Double click on the node and create a configuration node for pilight-switches. Add the hostname and port (usually 5001) of your pilight server.
+1. If this is the first pilight switch used
   1. Deploy the switch and the switch will go into error state.
-  2. Edit the switch and select a pilight device from the dropdown list.
-  3. Update the pilight switch name
-  4. Deploy the updated switch to update the state of the pilight switch with the current state
-6. If this is another pilight switch used
   1. Edit the switch and select a pilight device from the dropdown list.
-  2. Update the pilight switch name
-  3. Deploy the updated switch to update the state of the pilight switch with the current state
-7. Pass `true` or `false` into the node to turn the switch on or off.
+  1. Update the pilight switch name
+  1. Deploy the updated switch to update the state of the pilight switch with the current state
+1. If this is another pilight switch used
+  1. Edit the switch and select a pilight device from the dropdown list.
+  1. Update the pilight switch name
+  1. Deploy the updated switch to update the state of the pilight switch with the current state
+1. Pass `true` or `false` into the node to turn the switch on or off.
 
 ## Input
 
@@ -74,11 +74,11 @@ msg={
 ## Open issues
 
 1. When the first pilight switch instance with the pilight server config was created there is no retrieval done of the existing devices from the pilight server. This retrieval will be triggered when the first pilight switch is deployed. Then the switch will go into error state first because no device was selected for the switch. Next the switch has to be updated and a device from the drop down list be selected to retrieve the current switch status on the pilight server and set the switch to state on or off. If a deployed pilight switch exist already the device list is available immediately.
-2. Even multiple pilight server configs can be defined and used by the switches only one pilight switch can be used as of now.
+1. Even multiple pilight server configs can be defined and used by the switches only one pilight switch can be used as of now.
 
 ### Todos
 
 1. Solve initial device list retrieval (Shortcut 1.)
-2. Support multiple pilight servers (Shortcut 2.)
+1. Support multiple pilight servers (Shortcut 2.)
 
 #### Any hint and/or help how to get both todos solved is appreciated.
