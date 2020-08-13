@@ -44,14 +44,14 @@ In following flow there are three pilight switches defined. One in on and the ot
 1. Drag and drop node `pilight switches` into the flow editor
 1. Double click on the node and create a configuration node for pilight-switches. Add the hostname and port (usually 5001) of your pilight server.
 1. If this is the first pilight switch used
-  1. Deploy the switch and the switch will go into error state.
-  1. Edit the switch and select a pilight device from the dropdown list.
-  1. Update the pilight switch name
-  1. Deploy the updated switch to update the state of the pilight switch with the current state
+1. Deploy the switch and the switch will go into error state.
+   1. Edit the switch and select a pilight device from the dropdown list.
+   1. Update the pilight switch name
+   1. Deploy the updated switch to update the state of the pilight switch with the current state
 1. If this is another pilight switch used
-  1. Edit the switch and select a pilight device from the dropdown list.
-  1. Update the pilight switch name
-  1. Deploy the updated switch to update the state of the pilight switch with the current state
+   1. Edit the switch and select a pilight device from the dropdown list.
+   1. Update the pilight switch name
+   1. Deploy the updated switch to update the state of the pilight switch with the current state
 1. Pass `true` or `false` into the node to turn the switch on or off.
 
 ## Input
